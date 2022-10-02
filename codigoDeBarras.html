@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styleCB.css">
+        <title>Document</title>
+    </head>
+    <body>
+        
+        <input type="number" max="10" codigo onblur="gerarCodigoCompleto()">
+        <div class="codigo">
+
+        </div>
+        
+    <script>
+        //os códigos de barras mais comuns do tipo upc-a     
+        //nos códigos de barra, cada número representa 7 barras. Abaixo no array cada item representa um número da sequencia de 0 a 9
+        let codigoDeBarrasEquerdo = [
+            ["#fff","#fff","#fff","#000","#000","#fff","#000"],
+            ["#fff","#fff","#000","#000","#fff","#fff","#000"],
+            ["#fff","#fff","#000","#fff","#fff","#000","#000"],
+            ["#fff","#000","#000","#000","#000","#fff","#000"],
+            ["#fff","#000","#fff","#fff","#fff","#000","#000"],
+            ["#fff","#000","#000","#fff","#fff","#fff","#000"],
+            ["#fff","#000","#fff","#000","#000","#000","#000"],
+            ["#fff","#000","#000","#000","#fff","#000","#000"],
+            ["#fff","#000","#000","#fff","#000","#000","#000"],
+            ["#fff","#fff","#fff","#000","#fff","#000","#000"]
+        ]
+
+        let codigoDeBarrasDireirto = [
+            ["#000","#000","#000","#fff","#fff","#000","#fff"],
+            ["#000","#000","#fff","#fff","#000","#000","#fff"],
+            ["#000","#000","#fff","#000","#000","#fff","#fff"],
+            ["#000","#fff","#fff","#fff","#fff","#000","#fff"],
+            ["#000","#fff","#000","#000","#000","#fff","#fff"],
+            ["#000","#fff","#fff","#000","#000","#000","#fff"],
+            ["#000","#fff","#000","#fff","#fff","#fff","#fff"],
+            ["#000","#fff","#fff","#fff","#000","#fff","#fff"],
+            ["#000","#fff","#fff","#000","#fff","#fff","#fff"],
+            ["#000","#000","#000","#fff","#000","#fff","#fff"]
+        ]
+
+        function gerarCodigoCompleto(){
+            gerarExtremidade()
+            gerarLadoEquerdo()
+            gerarMeio()
+            gerarLadoDireito()
+            gerarExtremidade()
+        }
+
+        function gerarExtremidade(){
+            gerarBarra("#000")
+            gerarBarra("#fff")
+            gerarBarra("#000")
+        }
+
+        function gerarMeio(){
+            gerarBarra("#fff")
+            gerarBarra("#000")
+            gerarBarra("#fff")
+            gerarBarra("#000")
+            gerarBarra("#fff")
+        }
+
+        function gerarLadoEquerdo(){
+            let codigo = document.querySelector('[codigo]').value.split('')
+
+            //função completaCodigo introduz zeros no início caso o numero não tenha 11 dígitos
+            codigo = completaCodigo(codigo)
+
+            for(let i = 0; i<6; i++){
+                //cada numero vai gerar 7 barras seguindo o padrão do array
+                let num = codigo[i] 
+                for(let j = 0; j<7; j++){
+                    gerarBarra(codigoDeBarrasEquerdo[num][j])
+                }
+                
+            }
+        }
+
+        function gerarLadoDireito(){
+            let codigo = document.querySelector('[codigo]').value.split('')
+
+            //função completaCodigo introduz zeros no início caso o numero não tenha 11 dígitos
+            codigo = completaCodigo(codigo)
+            
+            //função calculaDigitoVerificador introduz o digito verificador (12º) no fim do array e é feita somente do lado direito pois o dígito fica no final
+            codigo = calculaDigitoVericador(codigo)
+    
+            for(let i = 6; i<12; i++){
+                let num = codigo[i]
+                console.log(codigo[i])
+                for(let j = 0; j<7; j++){
+                    gerarBarra(codigoDeBarrasDireirto[num][j])
+                }
+                
+            }
+        }
+
+        function completaCodigo(codigo){
+            //introduz zeros no início caso o numero não tenha 12 dígitos
+            while(codigo.length < 11){
+                codigo.unshift('0')
+            }
+            return codigo
+        }
+
+        function gerarBarra(cor){
+            //nesse trecho criamos cada barra referente do número
+            let barra  = document.createElement('div')
+            barra.classList.add('barra')
+            barra.style.background = cor
+            //nesse trecho incorporamos a barra dentro da div referente ao número
+            document.querySelector('.codigo').appendChild(barra)
+        }
+
+        function calculaDigitoVericador(codigo){
+            let somaDosImpares = 0
+            let somaDosPares = 0
+            let digitoVericador = 0
+
+            for(let i = 0; i < 11; i+=2){
+                somaDosImpares += parseInt(codigo[i])
+            }
+
+            for(let i = 1; i < 10; i+=2){
+                somaDosPares += parseInt(codigo[i])
+            }
+
+            somaDosImpares *= 3
+            digitoVericador = somaDosImpares + somaDosPares
+            let i = digitoVericador
+            while(i%10 !== 0){
+                i++
+            }
+            digitoVericador = i - digitoVericador
+
+            codigo.push(digitoVericador)
+            return codigo
+        }
+    </script>
+</body>
+</html>

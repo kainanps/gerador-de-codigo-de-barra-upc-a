@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 20px;
+    -webkit-print-color-adjust: exact;
+}
+
+div.codigo {
+    display: flex;
+    height: 100px;
+    width: 300px;
+}
+
+/* div.codigo div.numero{
+    height: 100%;
+    width: calc(100%/3);
+    margin: 0;
+    padding: 0;
+    display: flex;
+} */
+
+div.codigo div.barra {
+    height: 100%;
+    width: calc(100%/95);
+}
